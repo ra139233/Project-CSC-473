@@ -60,21 +60,18 @@ QuadTreeNode::QuadTreeNode(BoundingBox Box, int cap) {
 
 QuadTreeNode::~QuadTreeNode() {
 
-	if (this->northWest != NULL)
-		delete this->northWest;
+		// Free all child nodes.
+		if (this->northWest != NULL) delete this->northWest;
+		if (this->northEast != NULL) delete this->northEast;
+		if (this->southWest != NULL) delete this->southWest;
+		if (this->southEast != NULL) delete this->southEast;
 
-	if (this->northEast != NULL)
-		delete this->northEast;
+		// Free all nodes contained within this node.
+		//free(this->PlanetInfo[0].data);
 
-	if (this->southWest != NULL)
-		delete this->southWest;
+		// Free this node.
+		delete this->PlanetInfo;
 
-	if (this->southEast != NULL)
-		delete this->southEast;
-
-	for (int i = 0; i < this->count; i++)
-		free(this->PlanetInfo[i].data);
-	
 }
 
 QuadTreeNode* QuadTreeNode::QuadTreeNodeMake(BoundingBox Box, int capacity) {
@@ -249,6 +246,7 @@ QuadTreeNodeData QuadTreeNode::getPlanet() const {
 	return this->PlanetInfo[0];
 
 }
+
 
 BoundingBox QuadTreeNode::getBoundary() const {
 

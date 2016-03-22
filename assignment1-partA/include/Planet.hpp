@@ -17,10 +17,16 @@ public:
 	float mRadius;
 	atlas::math::Matrix4 mPlanetModel;
 	atlas::primitives::Disk mPlanet;
+	atlas::math::Vector mRadialVelocity;
+	atlas::math::Vector mTangenVelocity;
 
 
 	Planet(atlas::math::Vector mPosition, float mRadius, float mMass):
 		mPlanet(mRadius, 40),
+		mRadialVelocity(0.0f, 0.0f, 0.0f),
+		mTangenVelocity(0.0f, 0.0f, 0.0f),
+		mTangenResultant(0.0f, 0.0f, 0.0f),
+		mAngVelocity(0.0005f),
 		mIntegrator(Integrator::EULER)
 	{
 		this->mPosition = mPosition;
@@ -106,10 +112,10 @@ public:
 
 	
 private:
-	float mAngPosition = 0.0f;
+	atlas::math::Vector mRadialResultant = atlas::math::Vector(0.0f);
+	atlas::math::Vector mTangenResultant;
 
-	atlas::math::Vector mRadialVelocity;
-	atlas::math::Vector mTangenVelocity;
+	float mAngPosition = 0.0f;
 	float mAngVelocity = 0.0f;
 
 	atlas::math::Vector radialAccel;

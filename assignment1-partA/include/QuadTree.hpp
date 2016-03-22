@@ -50,6 +50,7 @@ public:
 	void initializeEmptyNode(QuadTreeNode *empty);
 
 	QuadTreeNodeData getPlanet() const;
+	void freeTree();
 	BoundingBox getBoundary() const;
 	int getCapacity() const;
 };

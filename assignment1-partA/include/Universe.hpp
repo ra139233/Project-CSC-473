@@ -9,9 +9,9 @@
 #include <time.h>
 
 
-#define MASS 10
+#define MASS 5000
 #define RADIUS 1
-#define BOUNDARY 10
+#define BOUNDARY 500
 #define RATIO 0.5
 
 class Universe : public atlas::utils::Geometry
@@ -27,12 +27,16 @@ public:
 		Planets = new Planet*[numPlanets];
 		float borderMin = - BOUNDARY;
 		float borderMax = BOUNDARY;
+		int minMass = 10;
+		int maxMass = 50;
 		srand(static_cast <unsigned> (time(0)));
 
 		for (int i = 0; i < numPlanets; i++)
 		{
 			atlas::math::Vector mPosition = getRandomPosition(borderMin, borderMax);
-			Planets[i] = new Planet(mPosition ,RADIUS, MASS);		
+			int mMass = getRandomMass(minMass, maxMass);
+			int radius = mMass / 10;
+			Planets[i] = new Planet(mPosition, RADIUS, MASS);		
 		}
 
 		mInitialBox.topLeft.x = - (BOUNDARY + 5);
@@ -53,7 +57,7 @@ public:
 	BoundingBox mInitialBox;
 	
 
-	atlas::math::Vector getRandomPosition(float min, float max) {
+atlas::math::Vector getRandomPosition(float min, float max) {
 
 		atlas::math::Vector Position;
 
@@ -66,7 +70,14 @@ public:
 		return Position;
 
 
-	};
+};
+
+int getRandomMass(int min, int max) {
+	 
+	int output = min + (rand() % (int)(max - min + 1));
+
+	return output;
+}
 
 private:
 	

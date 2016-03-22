@@ -31,15 +31,19 @@ void Planet::renderGeometry(atlas::math::Matrix4 projection,
 
 void Planet::calculateNetAcceleration(QuadTreeNodeData * mOtherPlanet)
 {
-	atlas::math::Vector r = (mOtherPlanet->centerOfMass - mPosition);
+	atlas::math::Vector r = (mPosition - mOtherPlanet->centerOfMass);
 	atlas::math::Vector mNormalRadius = getNormal(r);
+	atlas::math::Vector mPerpendicular = getPerpendicular(mNormalRadius);
 	float rModulus = getModulus(r);
 
-	thetadotdot = -(2.0f * (mAngVelocity * getModulus(mRadialVelocity)) / rModulus);
-	tangenAccel += thetadotdot * getPerpendicular(mNormalRadius) * rModulus;
+	if (rModulus <= 0.05f)
+		return;
 
-	rdotdot = mAngVelocity * mAngVelocity * rModulus - ((G * mOtherPlanet->totalMass) / (rModulus * rModulus));
-	radialAccel += rdotdot * mNormalRadius;
+	thetadotdot -= (2.0f * (mAngVelocity * getModulus(mRadialVelocity)) / rModulus);
+	rdotdot += mAngVelocity * mAngVelocity * rModulus - ((G * mOtherPlanet->totalMass) / (rModulus * rModulus));
+	
+	mRadialResultant += mNormalRadius;
+	mTangenResultant += mPerpendicular * rModulus;
 
 }
 
@@ -63,18 +67,20 @@ void Planet::updateEulerGeometry(atlas::utils::Time const& t) {
 	mAngVelocity += thetadotdot * t.deltaTime;
 	mAngPosition += mAngVelocity * t.deltaTime;
 	
+	tangenAccel = thetadotdot * mTangenResultant;
 	mTangenVelocity += (tangenAccel * t.deltaTime); // v = w r  . w = tangenAccel * dt
 	mPosition +=  mTangenVelocity * t.deltaTime;
 
-	mModel = glm::translate(atlas::math::Matrix4(1.0f), mPosition);
+//	mModel = glm::translate(atlas::math::Matrix4(1.0f), mPosition);
 
-
-	
+	radialAccel = rdotdot * mRadialResultant;
 	mRadialVelocity += radialAccel * t.deltaTime;
 	mPosition += mRadialVelocity * t.deltaTime;
 
-	mModel = glm::translate(atlas::math::Matrix4(1.0f), mPosition);
+	mPlanetModel = glm::translate(atlas::math::Matrix4(1.0f), mPosition);
 	
+	mTangenResultant = atlas::math::Vector(0.0f);
+	mRadialResultant = atlas::math::Vector(0.0f);
 }
 
 

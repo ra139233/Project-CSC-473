@@ -12,13 +12,13 @@ SimpleGLScene::SimpleGLScene() :
 	mTick(1.0f / mFPS),
 	mAnimTime(0.0f),
 	mAnimLength(3.0f),
-	mUniverse(3)
+	mUniverse(1500)
 
 {
     // Initialize the matrices to identities.
     mProjection = glm::perspective(glm::radians(45.0f), (float)16 / (float)9, 0.1f, 100.0f);
     mView = glm::lookAt(
-		               glm::vec3(0, 0, 100), // Camera is at (0,0,15), in World Space
+		               glm::vec3(0, 0, 1000), // Camera is at (0,0,15), in World Space
 		               glm::vec3(0, 0, 0), // and looks at the origin
 		               glm::vec3(0, 1, 0)  // Head is up (set to 0,-1,0 to look upside-down)
 		);

@@ -11,52 +11,25 @@
 #include <atlas/core/Float.hpp>
 #include <iostream>
 
-#define maxNodes 100
-static int cont = 0;
-
-QuadTreeNode** mList;
-
 void Universe::renderGeometry(atlas::math::Matrix4 projection,
 	atlas::math::Matrix4 view)
 {
 	for (int i = 0; i < numPlanets; i++) {
 		Planets[i]->renderGeometry(projection, view);
 
-		std::cout << std::to_string(Planets[i]->mPosition.x) << std::endl;
-		std::cout << std::to_string(Planets[i]->mPosition.y) << std::endl;
-		std::cout << "\n" << std::endl;
+//		std::cout << std::to_string(Planets[i]->mRadialVelocity.x) << std::endl;
+//		std::cout << std::to_string(Planets[i]->mRadialVelocity.y) << std::endl;
+//		std::cout << "\n" << std::endl;
 	}
 
-	std::cout << "------------ END PLANETS POSITION ----------- \n\n" << std::endl;
+//	std::cout << "------------ END PLANETS POSITION ----------- \n\n" << std::endl;
 }
 
-void addToList(QuadTreeNode* addPlanet) {
-
-	mList[cont] = addPlanet;
-	cont++;
-
-}
 
 void Universe::updateGeometry(atlas::utils::Time const &dt) {
 
 	mTree = buildTree();
-	//calculatePlanetsAcceleration(mRoot);
-	
-	QuadTreeNodeTraverseBlock mListPlanets;
-	
-	mListPlanets = &addToList;
-	mList = new QuadTreeNode*[maxNodes];
-
-	mTree->traverse(mListPlanets);
-	
-	for (int i = 0; i < cont; i++) {
-		std::cout << std::to_string(mList[i]->getPlanet().centerOfMass.x) << std::endl;
-		std::cout << std::to_string(mList[i]->getPlanet().centerOfMass.y) << std::endl;
-		std::cout << "\n" << std::endl;
-	}
-
 	Planet* mReferencePlanet;
-	int numNodes = cont;
 	QuadTreeNode* mActualNode = mTree;
 
 	for (int i = 0; i < numPlanets; i++) {
@@ -68,6 +41,7 @@ void Universe::updateGeometry(atlas::utils::Time const &dt) {
 		Planets[i]->updateGeometry(dt);
 	}
 	
+	mTree->~QuadTreeNode();
 }
 
 void Universe::calculatePlanetsAcceleration(Planet* mReference, QuadTreeNode* mCurrentNode) {
@@ -98,13 +72,7 @@ void Universe::calculatePlanetsAcceleration(Planet* mReference, QuadTreeNode* mC
 			calculatePlanetsAcceleration(mReference, mCurrentNode->southEast);
 
 		}
-
-
-
 	}
-
-
-
 }
 
 QuadTreeNode* Universe::buildTree() {
@@ -130,5 +98,3 @@ float Universe::getModulus(atlas::math::Vector mVector) {
 	return sqrt((mVector.x * mVector.x) + (mVector.y * mVector.y));
 
 }
-
-
